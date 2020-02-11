@@ -25,7 +25,7 @@ class Rover(var position: Position) {
     }
   }
 
-  def executeCommand(position: Position, command: Command): Position = {
+  private def executeCommand(position: Position, command: Command): Position = {
     command.execute(position)
   }
 }
