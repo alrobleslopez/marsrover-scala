@@ -6,7 +6,7 @@ class CommandSpec extends AnyFlatSpec {
   "A MoveForward command" should "move the rover forward in the Grid" in {
     val rover = new Rover(Position(0, 0, Direction.NORTH))
 
-    val roverAfterMoved = rover.move(rover, "MMM")
+    val roverAfterMoved = rover.move("MMM")
 
     assert(roverAfterMoved.position == Position(0, 3, Direction.NORTH))
   }
@@ -14,7 +14,7 @@ class CommandSpec extends AnyFlatSpec {
   "A TurnLeft command" should "turns the rover left in the Grid" in {
     val rover = new Rover(Position(0, 0, Direction.NORTH))
 
-    val roverAfterMoved = rover.move(rover, "L")
+    val roverAfterMoved = rover.move("L")
 
     assert(roverAfterMoved.position == Position(0, 0, Direction.WEST))
   }
@@ -22,7 +22,7 @@ class CommandSpec extends AnyFlatSpec {
   "A TurnRight command" should "turns the rover right in the Grid" in {
     val rover = new Rover(Position(0, 0, Direction.NORTH))
 
-    val roverAfterMoved = rover.move(rover, "R")
+    val roverAfterMoved = rover.move("R")
 
     assert(roverAfterMoved.position == Position(0, 0, Direction.EAST))
   }

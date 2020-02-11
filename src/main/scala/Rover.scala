@@ -3,7 +3,7 @@ import Main.Position
 import scala.annotation.tailrec
 
 class Rover(var position: Position) {
-  def move(rover: Rover, commands: String): Rover = {
+  def move(commands: String): Rover = {
 
     val commandsList = commands.split("").map {
       case "M" => MoveForward
