@@ -1,3 +1,4 @@
+import Main.Position
 import akka.Done
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -19,7 +20,8 @@ object WebServer {
   // needed for the future map/flatmap in the end and future in fetchItem and saveOrder
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
-  var orders: List[Item] = List(Item("1",1))
+  var orders: List[Item] = List(Item("1", 1))
+  val rover = new Rover(Position(0, 0, Direction.NORTH))
 
   // domain model
   final case class Item(name: String, id: Long)
@@ -31,8 +33,8 @@ object WebServer {
   implicit val orderFormat = jsonFormat1(Order)
 
   // (fake) async database query api
-  def fetchItem(itemId: Long): Future[Option[Item]] = Future {
-    orders.find(o => o.id == itemId)
+  def fetchItem(command: String): Future[Option[Rover]] = Future {
+    Some(rover.move(command))
   }
 
   def saveOrder(order: Order): Future[Done] = {
@@ -50,14 +52,18 @@ object WebServer {
     val route: Route =
       concat(
         get {
-          pathPrefix("item" / LongNumber) { id =>
+          path("item") {
             // there might be no item for a given id
-            val maybeItem: Future[Option[Item]] = fetchItem(id)
+            parameters(Symbol("command").as[String]) { (command) => {
+              val maybeItem: Future[Option[Rover]] = fetchItem(command)
 
-            onSuccess(maybeItem) {
-              case Some(item) => complete(item)
-              case None => complete(StatusCodes.NotFound)
+              onSuccess(maybeItem) {
+                case Some(item) => complete(item)
+                case None => complete(StatusCodes.NotFound)
+              }
             }
+            }
+
           }
         },
         post {
